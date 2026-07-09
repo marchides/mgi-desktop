@@ -88,7 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Monty's GLM Interface (Desktop Edition): a desktop-first chat client for GLM models via your own OpenRouter API key.",
+          "A desktop-first GLM chat client for OpenRouter.",
       },
       { name: "application-name", content: "MGI" },
       { name: "apple-mobile-web-app-title", content: "MGI" },
@@ -102,6 +102,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Monty's GLM Interface (Desktop Edition) — MGI" },
+      { name: "twitter:description", content: "A desktop-first GLM chat client for OpenRouter." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c62dc08a-698a-40c7-ae5c-eba25bad2151/id-preview-2b109fce--1eeb7952-5de9-46a6-aad9-4540946e20ae.lovable.app-1783613693693.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c62dc08a-698a-40c7-ae5c-eba25bad2151/id-preview-2b109fce--1eeb7952-5de9-46a6-aad9-4540946e20ae.lovable.app-1783613693693.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
