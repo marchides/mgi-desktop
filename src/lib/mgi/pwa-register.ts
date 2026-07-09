@@ -1,11 +1,23 @@
 /// <reference types="vite-plugin-pwa/client" />
 import { toast } from "sonner";
 
+function isTauriRuntime() {
+  if (typeof window === "undefined") return false;
+  const protocol = window.location.protocol;
+  return (
+    protocol === "tauri:" ||
+    protocol === "asset:" ||
+    "__TAURI_INTERNALS__" in window ||
+    "__TAURI__" in window
+  );
+}
+
 /**
  * Guarded service-worker registration for MGI.
  *
  * Refuses to register in:
  *   - dev builds
+ *   - Tauri/native desktop builds
  *   - Lovable preview / iframe hosts
  *   - `?sw=off` kill-switch
  *
@@ -19,6 +31,7 @@ export async function registerServiceWorker() {
   const url = new URL(window.location.href);
   const host = window.location.hostname;
   const inIframe = window.self !== window.top;
+  const inTauri = isTauriRuntime();
   const isPreviewHost =
     host.startsWith("id-preview--") ||
     host.startsWith("preview--") ||
@@ -29,7 +42,7 @@ export async function registerServiceWorker() {
     host === "beta.lovable.dev" ||
     host.endsWith(".beta.lovable.dev");
   const killSwitch = url.searchParams.get("sw") === "off";
-  const refuse = !import.meta.env.PROD || inIframe || isPreviewHost || killSwitch;
+  const refuse = !import.meta.env.PROD || inTauri || inIframe || isPreviewHost || killSwitch;
 
   if (refuse) {
     // Clean up any stale registration in refused contexts.
