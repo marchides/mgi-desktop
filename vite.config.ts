@@ -93,7 +93,8 @@ export default defineConfig({
       // and makes its own `closeBundle` skip generating the service worker.
       // Running workbox-build directly after the client bundle closes
       // guarantees `sw.js` lands next to `index.html` for the PWA and for
-      // the Capacitor Android wrapper.
+      // the Tauri desktop wrapper.
+
       swPostBuildPlugin(),
     ],
   },
