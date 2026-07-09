@@ -355,7 +355,16 @@ function ChatPage() {
         >
           <X className="h-4 w-4" />
         </button>
+        <button
+          onClick={() => setDesktopSidebarCollapsed(true)}
+          className="hidden md:grid h-8 w-8 place-items-center rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground"
+          aria-label="Collapse sidebar"
+          title="Collapse sidebar (Ctrl+B)"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
+
       <div className="p-2">
         <button
           onClick={() => {
