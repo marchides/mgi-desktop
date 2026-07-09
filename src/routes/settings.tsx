@@ -160,6 +160,7 @@ function SettingsPage() {
 
 
         {/* API Key */}
+        <div id="sect-api" className="scroll-mt-16">
         <Card title="OpenRouter API Key" description="Stored locally on this device only. Never logged or shared.">
           <div className="flex items-center gap-2">
             <input
@@ -207,6 +208,7 @@ function SettingsPage() {
         </Card>
 
         {/* Model */}
+        <div id="sect-model" className="scroll-mt-16">
         <Card title="Model" description="Pick a preset or enter any OpenRouter model ID.">
           <div className="grid grid-cols-2 gap-2">
             {MODEL_PRESETS.map((m) => (
@@ -244,6 +246,7 @@ function SettingsPage() {
         </Card>
 
         {/* Routing */}
+        <div id="sect-routing" className="scroll-mt-16">
         <Card title="Routing mode" description="How OpenRouter picks the provider.">
           <div className="grid grid-cols-3 gap-2">
             {(["balanced", "cheapest", "fastest"] as RoutingMode[]).map((r) => (
@@ -259,6 +262,7 @@ function SettingsPage() {
         </Card>
 
         {/* System prompt */}
+        <div id="sect-system" className="scroll-mt-16">
         <Card title="System prompt" description="Optional. Sent as the system message.">
           <textarea
             value={settings.systemPrompt}
@@ -270,6 +274,7 @@ function SettingsPage() {
         </Card>
 
         {/* History */}
+        <div id="sect-history" className="scroll-mt-16">
         <Card title="History mode" description="Control what gets sent each turn.">
           <div className="grid grid-cols-3 gap-2">
             {([
@@ -301,6 +306,7 @@ function SettingsPage() {
         </Card>
 
         {/* Model parameters */}
+        <div id="sect-params" className="scroll-mt-16">
         <Card title="Model parameters" description="Fine-tune GLM behavior.">
           <SliderField
             label="Temperature"
@@ -400,6 +406,7 @@ function SettingsPage() {
         </Card>
 
         {/* Theme */}
+        <div id="sect-theme" className="scroll-mt-16">
         <Card title="Appearance" description="Theme mode and accent color.">
           <div className="grid grid-cols-3 gap-2">
             {(["light", "dark", "system"] as ThemeMode[]).map((t) => (
@@ -433,6 +440,7 @@ function SettingsPage() {
         </Card>
 
         {/* Attachments */}
+        <div id="sect-attachments" className="scroll-mt-16">
         <Card
           title="Attachments"
           description="File uploads are sent only to OpenRouter when you send the message."
@@ -494,6 +502,7 @@ function SettingsPage() {
         </Card>
 
         {/* Privacy & local data */}
+        <div id="sect-privacy" className="scroll-mt-16">
         <Card
           title="Privacy"
           description="Chats are stored locally on this device only unless you export them. MGI has no server and never uploads your conversations."
