@@ -448,13 +448,17 @@ function ChatPage() {
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <MgiLogo size={22} className="shrink-0 md:hidden" />
               <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-semibold leading-tight">
-                  {active?.title ?? "Monty's GLM Interface (Desktop Edition)"}
+                <div className="flex items-center gap-2">
+                  <span className="mgi-accent-dot shrink-0" aria-hidden />
+                  <div className="truncate text-sm font-semibold leading-tight">
+                    {active?.title ?? "Monty's GLM Interface"}
+                  </div>
                 </div>
                 <div className="truncate text-[10px] leading-tight text-muted-foreground">
                   {settings.model} · {settings.routingMode}
                 </div>
               </div>
+
             </div>
             <button
               onClick={() => createConversation()}
