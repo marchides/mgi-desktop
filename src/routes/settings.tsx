@@ -586,9 +586,11 @@ function SettingsPage() {
           </div>
         </Panel>
       </PanelGroup>
+      </div>
     </div>
   );
 }
+
 
 // ---- Reusable UI bits ----
 
