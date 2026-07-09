@@ -127,26 +127,35 @@ function SettingsPage() {
   ];
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-background text-foreground">
-      <header
-        className="sticky top-0 z-10 border-b border-border bg-background/85 backdrop-blur"
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
-      >
-        <div className="flex h-11 items-center gap-2 px-2 sm:px-3">
-          <Link
-            to="/"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
-            aria-label="Back"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <MgiLogo size={22} className="shrink-0" />
-          <h1 className="truncate text-sm font-semibold">Settings</h1>
-          <span className="ml-2 hidden md:inline text-xs text-muted-foreground">Desktop Edition</span>
-        </div>
-      </header>
+    <div
+      className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/50 backdrop-blur-sm p-0 sm:items-center sm:p-6 md:p-10"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Settings"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) closeSettings();
+      }}
+    >
+      <div className="flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-none border border-border bg-background text-foreground shadow-2xl sm:h-auto sm:max-h-[90vh] sm:rounded-2xl">
+        <header className="relative shrink-0 border-b border-border bg-background/85 backdrop-blur">
+          <div className="flex h-14 items-center gap-3 px-4 sm:px-5">
+            <MgiLogo size={26} className="shrink-0" />
+            <h1 className="truncate text-base font-semibold">Settings</h1>
+            <span className="hidden md:inline text-xs text-muted-foreground">Monty's GLM Interface</span>
+            <div className="flex-1" />
+            <button
+              onClick={closeSettings}
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"
+              aria-label="Close settings"
+              title="Close (Esc)"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </header>
 
       <PanelGroup orientation="horizontal" className="flex flex-1 min-h-0">
+
         {/* Section nav — hidden on mobile, resizable on desktop */}
         <Panel defaultSize={20} minSize={12} maxSize={32} className="hidden md:block">
           <nav className="mgi-scroll h-full overflow-y-auto border-r border-border bg-muted/20 p-3 text-sm">
