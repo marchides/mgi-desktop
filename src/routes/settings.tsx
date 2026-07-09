@@ -548,9 +548,12 @@ function SettingsPage() {
 
 
         <div className="py-6 text-center text-[11px] text-muted-foreground">
-          Monty's GLM Interface · MGI v1.0
+          Monty's GLM Interface (Desktop Edition) · MGI v1.0
         </div>
-      </div>
+            </div>
+          </div>
+        </Panel>
+      </PanelGroup>
     </div>
   );
 }
