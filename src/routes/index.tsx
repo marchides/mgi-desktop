@@ -355,7 +355,16 @@ function ChatPage() {
         >
           <X className="h-4 w-4" />
         </button>
+        <button
+          onClick={() => setDesktopSidebarCollapsed(true)}
+          className="hidden md:grid h-8 w-8 place-items-center rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground"
+          aria-label="Collapse sidebar"
+          title="Collapse sidebar (Ctrl+B)"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
+
       <div className="p-2">
         <button
           onClick={() => {
@@ -423,7 +432,7 @@ function ChatPage() {
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
 
-          <div className="flex h-11 md:h-16 items-center gap-1.5 md:gap-3 px-2 sm:px-3 md:px-6">
+          <div className="flex h-12 md:h-20 items-center gap-2 md:gap-4 px-3 sm:px-4 md:px-8">
             {/* Mobile menu */}
             <button
               onClick={() => setSidebarOpen(true)}
@@ -432,34 +441,32 @@ function ChatPage() {
             >
               <Menu className="h-5 w-5" />
             </button>
-            {/* Desktop sidebar toggle */}
-            <button
-              onClick={() => setDesktopSidebarCollapsed((v) => !v)}
-              className="hidden md:grid h-9 w-9 shrink-0 place-items-center rounded-lg hover:bg-muted"
-              aria-label="Toggle sidebar"
-              title="Toggle sidebar (Ctrl+B)"
-            >
-              {desktopSidebarCollapsed ? (
-                <PanelLeftOpen className="h-[18px] w-[18px]" />
-              ) : (
-                <PanelLeftClose className="h-[18px] w-[18px]" />
-              )}
-            </button>
-            <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
+            {/* Desktop: reopen sidebar (only visible when collapsed) */}
+            {desktopSidebarCollapsed && (
+              <button
+                onClick={() => setDesktopSidebarCollapsed(false)}
+                className="hidden md:grid h-10 w-10 shrink-0 place-items-center rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground"
+                aria-label="Open sidebar"
+                title="Open sidebar (Ctrl+B)"
+              >
+                <PanelLeftOpen className="h-5 w-5" />
+              </button>
+            )}
+            <div className="flex min-w-0 flex-1 items-center gap-3 md:gap-4">
+              {/* Small logo on mobile only — desktop shows logo in the sidebar */}
               <MgiLogo size={22} className="shrink-0 md:hidden" />
-              <MgiLogo size={34} className="hidden md:block shrink-0" />
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 md:gap-2.5">
+                <div className="flex items-center gap-2.5 md:gap-3">
                   <span className="mgi-accent-dot shrink-0" aria-hidden />
-                  <div className="truncate text-sm md:text-lg font-semibold leading-tight md:tracking-tight">
+                  <div className="truncate text-sm md:text-xl font-semibold leading-tight md:tracking-tight">
                     {active?.title ?? "Monty's GLM Interface"}
                   </div>
                 </div>
-                <div className="mt-0.5 flex items-center gap-2 truncate text-[10px] md:text-xs leading-tight text-muted-foreground">
-                  <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2 py-0.5 font-mono text-[11px] text-foreground/80">
+                <div className="mt-1 md:mt-1.5 flex items-center gap-2 truncate text-[10px] md:text-xs leading-tight text-muted-foreground">
+                  <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 font-mono text-[11px] text-foreground/80">
                     {settings.model}
                   </span>
-                  <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[11px] capitalize">
+                  <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px] capitalize">
                     {settings.routingMode}
                   </span>
                   <span className="md:hidden truncate">
@@ -471,7 +478,7 @@ function ChatPage() {
             </div>
             <button
               onClick={() => createConversation()}
-              className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-muted transition"
+              className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium hover:bg-muted transition"
               aria-label="New chat"
               title="New chat (Ctrl+N)"
             >
@@ -487,12 +494,13 @@ function ChatPage() {
             </button>
             <Link
               to="/settings"
-              className="grid h-8 w-8 md:h-9 md:w-9 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-items-center rounded-lg hover:bg-muted"
               aria-label="Settings"
             >
-              <SettingsIcon className="h-4 w-4 md:h-[18px] md:w-[18px]" />
+              <SettingsIcon className="h-4 w-4 md:h-5 md:w-5" />
             </Link>
           </div>
+
 
         </header>
 
