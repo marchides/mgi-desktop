@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import {
   ArrowLeft,
   Check,
