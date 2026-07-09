@@ -159,8 +159,8 @@ function SettingsPage() {
             <div className="mx-auto w-full max-w-3xl xl:max-w-4xl space-y-3 sm:space-y-4">
 
 
+        <span id="sect-api" className="block scroll-mt-16" />
         {/* API Key */}
-        <div id="sect-api" className="scroll-mt-16">
         <Card title="OpenRouter API Key" description="Stored locally on this device only. Never logged or shared.">
           <div className="flex items-center gap-2">
             <input
@@ -207,8 +207,8 @@ function SettingsPage() {
           </p>
         </Card>
 
+        <span id="sect-model" className="block scroll-mt-16" />
         {/* Model */}
-        <div id="sect-model" className="scroll-mt-16">
         <Card title="Model" description="Pick a preset or enter any OpenRouter model ID.">
           <div className="grid grid-cols-2 gap-2">
             {MODEL_PRESETS.map((m) => (
@@ -245,8 +245,8 @@ function SettingsPage() {
           </p>
         </Card>
 
+        <span id="sect-routing" className="block scroll-mt-16" />
         {/* Routing */}
-        <div id="sect-routing" className="scroll-mt-16">
         <Card title="Routing mode" description="How OpenRouter picks the provider.">
           <div className="grid grid-cols-3 gap-2">
             {(["balanced", "cheapest", "fastest"] as RoutingMode[]).map((r) => (
@@ -261,8 +261,8 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <span id="sect-system" className="block scroll-mt-16" />
         {/* System prompt */}
-        <div id="sect-system" className="scroll-mt-16">
         <Card title="System prompt" description="Optional. Sent as the system message.">
           <textarea
             value={settings.systemPrompt}
@@ -273,8 +273,8 @@ function SettingsPage() {
           />
         </Card>
 
+        <span id="sect-history" className="block scroll-mt-16" />
         {/* History */}
-        <div id="sect-history" className="scroll-mt-16">
         <Card title="History mode" description="Control what gets sent each turn.">
           <div className="grid grid-cols-3 gap-2">
             {([
@@ -305,8 +305,8 @@ function SettingsPage() {
           )}
         </Card>
 
+        <span id="sect-params" className="block scroll-mt-16" />
         {/* Model parameters */}
-        <div id="sect-params" className="scroll-mt-16">
         <Card title="Model parameters" description="Fine-tune GLM behavior.">
           <SliderField
             label="Temperature"
@@ -405,8 +405,8 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <span id="sect-theme" className="block scroll-mt-16" />
         {/* Theme */}
-        <div id="sect-theme" className="scroll-mt-16">
         <Card title="Appearance" description="Theme mode and accent color.">
           <div className="grid grid-cols-3 gap-2">
             {(["light", "dark", "system"] as ThemeMode[]).map((t) => (
@@ -439,8 +439,8 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <span id="sect-attachments" className="block scroll-mt-16" />
         {/* Attachments */}
-        <div id="sect-attachments" className="scroll-mt-16">
         <Card
           title="Attachments"
           description="File uploads are sent only to OpenRouter when you send the message."
@@ -501,8 +501,8 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <span id="sect-privacy" className="block scroll-mt-16" />
         {/* Privacy & local data */}
-        <div id="sect-privacy" className="scroll-mt-16">
         <Card
           title="Privacy"
           description="Chats are stored locally on this device only unless you export them. MGI has no server and never uploads your conversations."
