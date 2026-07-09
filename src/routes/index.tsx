@@ -16,6 +16,8 @@ import {
   Trash2,
   X,
   Check,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 import { MgiLogo } from "@/components/mgi/MgiLogo";
