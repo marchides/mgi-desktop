@@ -42,10 +42,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Monty's GLM Interface — MGI" },
-      { name: "description", content: "A mobile-first GLM chat client for OpenRouter." },
-      { property: "og:title", content: "Monty's GLM Interface — MGI" },
-      { property: "og:description", content: "A mobile-first GLM chat client for OpenRouter." },
+      { title: "Monty's GLM Interface (Desktop Edition) — MGI" },
+      { name: "description", content: "A desktop-first GLM chat client for OpenRouter." },
+      { property: "og:title", content: "Monty's GLM Interface (Desktop Edition) — MGI" },
+      { property: "og:description", content: "A desktop-first GLM chat client for OpenRouter." },
     ],
   }),
   component: ChatPage,
