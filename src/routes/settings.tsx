@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from "react-resizable-panels";
 import {
-  ArrowLeft,
   Check,
   Download,
   Eye,
@@ -11,7 +10,9 @@ import {
   Loader2,
   Trash2,
   Upload,
+  X,
 } from "lucide-react";
+
 import { toast } from "sonner";
 import { MgiLogo } from "@/components/mgi/MgiLogo";
 import { useConversations, useSettings } from "@/lib/mgi/store";
