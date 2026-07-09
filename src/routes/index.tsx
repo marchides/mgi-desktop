@@ -63,12 +63,15 @@ function ChatPage() {
     renameConversation,
   } = useConversations();
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // mobile drawer
+  const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false);
   const [search, setSearch] = useState("");
   const [input, setInput] = useState("");
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const composerRef = useRef<HTMLTextAreaElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const [editingMsgId, setEditingMsgId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState("");
   const [pendingAtts, setPendingAtts] = useState<Attachment[]>([]);
