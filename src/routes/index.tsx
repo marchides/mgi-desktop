@@ -362,7 +362,7 @@ function ChatPage() {
             createConversation();
             setSidebarOpen(false);
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+          className="mgi-primary-glow flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-95"
         >
           <Plus className="h-4 w-4" /> New chat
           <kbd className="ml-2 hidden md:inline rounded bg-black/20 px-1.5 py-0.5 text-[10px] font-mono opacity-80">Ctrl N</kbd>
@@ -419,9 +419,10 @@ function ChatPage() {
       <div className="flex flex-1 min-w-0 flex-col">
         {/* Compact top bar */}
         <header
-          className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur"
+          className="mgi-topbar-accent sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur"
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
+
           <div className="flex h-11 items-center gap-1.5 px-2 sm:px-3">
             {/* Mobile menu */}
             <button
@@ -447,13 +448,17 @@ function ChatPage() {
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <MgiLogo size={22} className="shrink-0 md:hidden" />
               <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-semibold leading-tight">
-                  {active?.title ?? "Monty's GLM Interface (Desktop Edition)"}
+                <div className="flex items-center gap-2">
+                  <span className="mgi-accent-dot shrink-0" aria-hidden />
+                  <div className="truncate text-sm font-semibold leading-tight">
+                    {active?.title ?? "Monty's GLM Interface"}
+                  </div>
                 </div>
                 <div className="truncate text-[10px] leading-tight text-muted-foreground">
                   {settings.model} · {settings.routingMode}
                 </div>
               </div>
+
             </div>
             <button
               onClick={() => createConversation()}
@@ -497,7 +502,7 @@ function ChatPage() {
         )}
 
         {/* Messages */}
-        <div ref={listRef} className="mgi-scroll flex-1 overflow-y-auto px-4 py-4 md:px-8 lg:px-12">
+        <div ref={listRef} className="mgi-stage mgi-scroll flex-1 overflow-y-auto px-4 py-4 md:px-8 lg:px-12">
           {!active || active.messages.length === 0 ? (
             <EmptyState onPick={(t) => setInput(t)} />
           ) : (
@@ -645,24 +650,27 @@ function deriveTitle(text: string): string {
 
 function EmptyState({ onPick: _onPick }: { onPick: (t: string) => void }) {
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-3 pt-6 text-center sm:gap-5 sm:pt-10">
+    <div className="mx-auto flex max-w-xl flex-col items-center gap-4 pt-10 text-center sm:gap-6 sm:pt-20">
       <span className="sm:hidden">
         <MgiLogo size={56} />
       </span>
       <span className="hidden sm:block">
-        <MgiLogo size={72} />
+        <MgiLogo size={84} />
       </span>
       <div>
-        <h1 className="font-display text-xl font-bold tracking-tight sm:text-2xl">
-          Monty's GLM Interface
+        <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl">
+          <span>Monty&rsquo;s </span>
+          <span className="mgi-wordmark-accent">GLM</span>
+          <span> Interface</span>
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Chat with GLM through your own OpenRouter key.
+        <p className="mt-3 text-sm text-muted-foreground sm:text-base">
+          Desktop Edition &middot; chat with GLM through your own OpenRouter key.
         </p>
       </div>
     </div>
   );
 }
+
 
 
 interface BubbleProps {

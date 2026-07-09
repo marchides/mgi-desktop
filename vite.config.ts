@@ -12,7 +12,8 @@ import type { Plugin } from "vite";
 export default defineConfig({
   // Static build: no runtime Nitro/Node server. TanStack Start's SPA
   // prerender emits `dist/client/index.html`, and the client bundle is
-  // fully self-contained. Capacitor's Android WebView loads that folder.
+  // fully self-contained. Tauri's OS webview loads that folder.
+
   nitro: false,
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
@@ -92,7 +93,8 @@ export default defineConfig({
       // and makes its own `closeBundle` skip generating the service worker.
       // Running workbox-build directly after the client bundle closes
       // guarantees `sw.js` lands next to `index.html` for the PWA and for
-      // the Capacitor Android wrapper.
+      // the Tauri desktop wrapper.
+
       swPostBuildPlugin(),
     ],
   },
