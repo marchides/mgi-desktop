@@ -16,6 +16,8 @@ import {
   Trash2,
   X,
   Check,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 import { MgiLogo } from "@/components/mgi/MgiLogo";
@@ -40,10 +42,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Monty's GLM Interface — MGI" },
-      { name: "description", content: "A mobile-first GLM chat client for OpenRouter." },
-      { property: "og:title", content: "Monty's GLM Interface — MGI" },
-      { property: "og:description", content: "A mobile-first GLM chat client for OpenRouter." },
+      { title: "Monty's GLM Interface (Desktop Edition) — MGI" },
+      { name: "description", content: "A desktop-first GLM chat client for OpenRouter." },
+      { property: "og:title", content: "Monty's GLM Interface (Desktop Edition) — MGI" },
+      { property: "og:description", content: "A desktop-first GLM chat client for OpenRouter." },
     ],
   }),
   component: ChatPage,
@@ -61,12 +63,15 @@ function ChatPage() {
     renameConversation,
   } = useConversations();
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // mobile drawer
+  const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false);
   const [search, setSearch] = useState("");
   const [input, setInput] = useState("");
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const composerRef = useRef<HTMLTextAreaElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const [editingMsgId, setEditingMsgId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState("");
   const [pendingAtts, setPendingAtts] = useState<Attachment[]>([]);
@@ -309,266 +314,323 @@ function ChatPage() {
     c.messages.some((m) => m.content.toLowerCase().includes(search.toLowerCase())),
   );
 
-  return (
-    <div className="flex h-[100dvh] flex-col bg-background text-foreground">
-      {/* Header */}
-      <header
-        className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur"
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
-      >
-        <div className="flex h-12 items-center gap-1.5 px-2 sm:h-14 sm:gap-2 sm:px-3">
+  // Keyboard shortcuts: Ctrl/Cmd+N new, Ctrl/Cmd+K search, Ctrl/Cmd+B toggle sidebar,
+  // Ctrl/Cmd+/ focus composer, Esc stop streaming.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        createConversation();
+      } else if (mod && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchRef.current?.focus();
+      } else if (mod && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        if (window.matchMedia("(min-width: 768px)").matches) {
+          setDesktopSidebarCollapsed((v) => !v);
+        } else {
+          setSidebarOpen((v) => !v);
+        }
+      } else if (mod && e.key === "/") {
+        e.preventDefault();
+        composerRef.current?.focus();
+      } else if (e.key === "Escape" && streamingId) {
+        abortRef.current?.abort();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [createConversation, streamingId]);
+
+  const sidebarBody = (
+    <>
+      <div className="flex items-center gap-2 border-b border-border px-3 py-3">
+        <MgiLogo size={26} />
+        <div className="flex-1 text-sm font-semibold">Conversations</div>
         <button
-          onClick={() => setSidebarOpen(true)}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg hover:bg-muted"
-          aria-label="Open conversations"
+          onClick={() => setSidebarOpen(false)}
+          className="md:hidden grid h-8 w-8 place-items-center rounded-lg hover:bg-muted"
+          aria-label="Close"
         >
-          <Menu className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
-        <div className="flex min-w-0 flex-1 items-center gap-2">
-          <MgiLogo size={24} className="shrink-0" />
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-semibold leading-tight">
-              {active?.title ?? "Monty's GLM Interface"}
-            </div>
-            <div className="truncate text-[10px] leading-tight text-muted-foreground">
-              {settings.model} · {settings.routingMode}
-            </div>
-          </div>
-        </div>
+      </div>
+      <div className="p-2">
         <button
           onClick={() => {
             createConversation();
+            setSidebarOpen(false);
           }}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg hover:bg-muted"
-          aria-label="New chat"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-4 w-4" /> New chat
+          <kbd className="ml-2 hidden md:inline rounded bg-black/20 px-1.5 py-0.5 text-[10px] font-mono opacity-80">Ctrl N</kbd>
         </button>
-        <Link
-          to="/settings"
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg hover:bg-muted"
-          aria-label="Settings"
+      </div>
+      <div className="px-2 pb-2">
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-2">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <input
+            ref={searchRef}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search (Ctrl K)"
+            className="flex-1 bg-transparent py-2 text-sm outline-none"
+          />
+        </div>
+      </div>
+      <div className="mgi-scroll flex-1 overflow-y-auto px-2 pb-3">
+        {filtered.length === 0 && (
+          <p className="px-2 py-6 text-center text-xs text-muted-foreground">
+            No conversations yet.
+          </p>
+        )}
+        {filtered.map((c) => (
+          <ConversationRow
+            key={c.id}
+            c={c}
+            active={c.id === activeId}
+            onOpen={() => {
+              setActiveId(c.id);
+              setSidebarOpen(false);
+            }}
+            onRename={(t) => renameConversation(c.id, t)}
+            onDelete={() => deleteConversation(c.id)}
+          />
+        ))}
+      </div>
+    </>
+  );
+
+  return (
+    <div className="flex h-[100dvh] bg-background text-foreground">
+      {/* Desktop permanent sidebar */}
+      <aside
+        className={cn(
+          "hidden md:flex shrink-0 flex-col border-r border-border transition-[width] duration-200 ease-out",
+          desktopSidebarCollapsed ? "w-0 overflow-hidden" : "w-72 lg:w-80",
+        )}
+      >
+        {sidebarBody}
+      </aside>
+
+      {/* Main column */}
+      <div className="flex flex-1 min-w-0 flex-col">
+        {/* Compact top bar */}
+        <header
+          className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur"
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
-          <SettingsIcon className="h-5 w-5" />
-        </Link>
-        </div>
-      </header>
-
-
-      {/* Warnings */}
-      {(bigContext || bigOutput || !hasKey || bigAttachments || pendingImageOnTextModel || pendingPdfOnNoPdfModel) && (
-        <div className="border-b border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground space-y-1">
-          {!hasKey && <p>⚠ Add your OpenRouter API key in Settings to start chatting.</p>}
-          {bigContext && <p>⚠ Large context may be slow and expensive.</p>}
-          {bigOutput && <p>⚠ Very large outputs can be slow and costly.</p>}
-          {bigAttachments && (
-            <p>⚠ Large attachments ({humanSize(totalPendingBytes)}) can raise cost and latency.</p>
-          )}
-          {pendingImageOnTextModel && (
-            <p>
-              ⚠ {settings.model} may not support images.{" "}
-              <button
-                onClick={switchToVisionModel}
-                className="underline hover:text-foreground"
-              >
-                Switch to {settings.visionModel}
-              </button>
-            </p>
-          )}
-          {pendingPdfOnNoPdfModel && (
-            <p>⚠ {settings.model} may not support PDFs. The provider may reject the file.</p>
-          )}
-        </div>
-      )}
-
-      {/* Messages */}
-      <div ref={listRef} className="mgi-scroll flex-1 overflow-y-auto px-3 py-3 sm:py-4">
-
-        {!active || active.messages.length === 0 ? (
-          <EmptyState onPick={(t) => setInput(t)} />
-        ) : (
-          <div className="mx-auto flex max-w-2xl flex-col gap-4">
-            {active.messages.map((m) => (
-              <MessageBubble
-                key={m.id}
-                m={m}
-                streaming={streamingId === m.id}
-                editing={editingMsgId === m.id}
-                editDraft={editDraft}
-                setEditDraft={setEditDraft}
-                onStartEdit={() => {
-                  setEditingMsgId(m.id);
-                  setEditDraft(m.content);
-                }}
-                onCancelEdit={() => setEditingMsgId(null)}
-                onSubmitEdit={() => submitEdit(m.id)}
-              />
-            ))}
-            <div className="flex flex-wrap gap-2 pt-1">
-              {streamingId ? (
-                <button
-                  onClick={stop}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs hover:bg-muted"
-                >
-                  <Square className="h-3.5 w-3.5" /> Stop
-                </button>
+          <div className="flex h-11 items-center gap-1.5 px-2 sm:px-3">
+            {/* Mobile menu */}
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              aria-label="Open conversations"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            {/* Desktop sidebar toggle */}
+            <button
+              onClick={() => setDesktopSidebarCollapsed((v) => !v)}
+              className="hidden md:grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              aria-label="Toggle sidebar"
+              title="Toggle sidebar (Ctrl+B)"
+            >
+              {desktopSidebarCollapsed ? (
+                <PanelLeftOpen className="h-4 w-4" />
               ) : (
-                active.messages.some((m) => m.role === "assistant") && (
-                  <button
-                    onClick={regenerate}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs hover:bg-muted"
-                  >
-                    <RefreshCw className="h-3.5 w-3.5" /> Regenerate
-                  </button>
-                )
+                <PanelLeftClose className="h-4 w-4" />
               )}
-              <button
-                onClick={clearCurrent}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs hover:bg-muted"
-              >
-                <Trash2 className="h-3.5 w-3.5" /> Clear chat
-              </button>
+            </button>
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <MgiLogo size={22} className="shrink-0 md:hidden" />
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm font-semibold leading-tight">
+                  {active?.title ?? "Monty's GLM Interface (Desktop Edition)"}
+                </div>
+                <div className="truncate text-[10px] leading-tight text-muted-foreground">
+                  {settings.model} · {settings.routingMode}
+                </div>
+              </div>
             </div>
+            <button
+              onClick={() => createConversation()}
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              aria-label="New chat"
+              title="New chat (Ctrl+N)"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+            <Link
+              to="/settings"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              aria-label="Settings"
+            >
+              <SettingsIcon className="h-4 w-4" />
+            </Link>
+          </div>
+        </header>
+
+        {/* Warnings */}
+        {(bigContext || bigOutput || !hasKey || bigAttachments || pendingImageOnTextModel || pendingPdfOnNoPdfModel) && (
+          <div className="border-b border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground space-y-1">
+            {!hasKey && <p>⚠ Add your OpenRouter API key in Settings to start chatting.</p>}
+            {bigContext && <p>⚠ Large context may be slow and expensive.</p>}
+            {bigOutput && <p>⚠ Very large outputs can be slow and costly.</p>}
+            {bigAttachments && (
+              <p>⚠ Large attachments ({humanSize(totalPendingBytes)}) can raise cost and latency.</p>
+            )}
+            {pendingImageOnTextModel && (
+              <p>
+                ⚠ {settings.model} may not support images.{" "}
+                <button onClick={switchToVisionModel} className="underline hover:text-foreground">
+                  Switch to {settings.visionModel}
+                </button>
+              </p>
+            )}
+            {pendingPdfOnNoPdfModel && (
+              <p>⚠ {settings.model} may not support PDFs. The provider may reject the file.</p>
+            )}
           </div>
         )}
-      </div>
 
-      {/* Composer */}
-      <div className="sticky bottom-0 z-10 border-t border-border bg-background/95 backdrop-blur px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2">
-        <div className="mx-auto max-w-2xl space-y-2">
-          {pendingAtts.length > 0 && (
-            <AttachmentStrip
-              atts={pendingAtts}
-              onRemove={removePending}
-              onClearAll={() => setPendingAtts([])}
-            />
+        {/* Messages */}
+        <div ref={listRef} className="mgi-scroll flex-1 overflow-y-auto px-4 py-4 md:px-8 lg:px-12">
+          {!active || active.messages.length === 0 ? (
+            <EmptyState onPick={(t) => setInput(t)} />
+          ) : (
+            <div className="mx-auto flex w-full max-w-2xl md:max-w-3xl xl:max-w-4xl flex-col gap-4">
+              {active.messages.map((m) => (
+                <MessageBubble
+                  key={m.id}
+                  m={m}
+                  streaming={streamingId === m.id}
+                  editing={editingMsgId === m.id}
+                  editDraft={editDraft}
+                  setEditDraft={setEditDraft}
+                  onStartEdit={() => {
+                    setEditingMsgId(m.id);
+                    setEditDraft(m.content);
+                  }}
+                  onCancelEdit={() => setEditingMsgId(null)}
+                  onSubmitEdit={() => submitEdit(m.id)}
+                />
+              ))}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {streamingId ? (
+                  <button
+                    onClick={stop}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs hover:bg-muted"
+                  >
+                    <Square className="h-3.5 w-3.5" /> Stop <kbd className="ml-1 font-mono text-[10px] opacity-70">Esc</kbd>
+                  </button>
+                ) : (
+                  active.messages.some((m) => m.role === "assistant") && (
+                    <button
+                      onClick={regenerate}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs hover:bg-muted"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5" /> Regenerate
+                    </button>
+                  )
+                )}
+                <button
+                  onClick={clearCurrent}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs hover:bg-muted"
+                >
+                  <Trash2 className="h-3.5 w-3.5" /> Clear chat
+                </button>
+              </div>
+            </div>
           )}
-          <div className="mgi-composer flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring">
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              className="hidden"
-              accept="image/png,image/jpeg,image/webp,application/pdf,text/*,.md,.json,.csv,.html,.css,.js,.jsx,.ts,.tsx,.py"
-              onChange={(e) => {
-                void onPickFiles(e.target.files);
-                e.target.value = "";
-              }}
-            />
-            <button
-              onClick={() => {
-                if (!settings.enableAttachments) {
-                  toast.error("Attachments are disabled in Settings.");
-                  return;
-                }
-                fileInputRef.current?.click();
-              }}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
-              aria-label="Attach files"
-            >
-              <Paperclip className="h-5 w-5" />
-            </button>
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                // Enter to send only when not composing; Shift+Enter = newline
-                if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
-                  e.preventDefault();
-                  sendMessage(input, pendingAtts);
-                }
-              }}
-              rows={1}
-              placeholder={hasKey ? "Message GLM..." : "Add API key in Settings"}
-              className="mgi-scroll min-h-[38px] max-h-40 flex-1 resize-none bg-transparent px-1 py-2 text-[15px] outline-none placeholder:text-muted-foreground"
-              style={{ lineHeight: 1.4 }}
-            />
+        </div>
 
-            <button
-              onClick={() => sendMessage(input, pendingAtts)}
-              disabled={
-                !hasKey ||
-                (!input.trim() && pendingAtts.length === 0) ||
-                !!streamingId
-              }
-              className={cn(
-                "grid h-9 w-9 shrink-0 place-items-center rounded-lg transition",
-                !hasKey || (!input.trim() && pendingAtts.length === 0) || !!streamingId
-                  ? "bg-muted text-muted-foreground"
-                  : "bg-primary text-primary-foreground hover:opacity-90",
-              )}
-              aria-label="Send"
-            >
-              <ArrowUp className="h-5 w-5" />
-            </button>
-          </div>
-          <div className="pt-1.5 text-center text-[10px] text-muted-foreground">
-            Monty's GLM Interface · MGI v1.0
+        {/* Composer */}
+        <div className="sticky bottom-0 z-10 border-t border-border bg-background/95 backdrop-blur px-4 md:px-8 lg:px-12 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2">
+          <div className="mx-auto w-full max-w-2xl md:max-w-3xl xl:max-w-4xl space-y-2">
+            {pendingAtts.length > 0 && (
+              <AttachmentStrip
+                atts={pendingAtts}
+                onRemove={removePending}
+                onClearAll={() => setPendingAtts([])}
+              />
+            )}
+            <div className="mgi-composer flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring">
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                className="hidden"
+                accept="image/png,image/jpeg,image/webp,application/pdf,text/*,.md,.json,.csv,.html,.css,.js,.jsx,.ts,.tsx,.py"
+                onChange={(e) => {
+                  void onPickFiles(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+              <button
+                onClick={() => {
+                  if (!settings.enableAttachments) {
+                    toast.error("Attachments are disabled in Settings.");
+                    return;
+                  }
+                  fileInputRef.current?.click();
+                }}
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
+                aria-label="Attach files"
+              >
+                <Paperclip className="h-5 w-5" />
+              </button>
+              <textarea
+                ref={composerRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    sendMessage(input, pendingAtts);
+                  }
+                }}
+                rows={1}
+                placeholder={hasKey ? "Message GLM…  (Enter to send · Shift+Enter newline)" : "Add API key in Settings"}
+                className="mgi-scroll min-h-[38px] max-h-56 flex-1 resize-none bg-transparent px-1 py-2 text-[15px] outline-none placeholder:text-muted-foreground"
+                style={{ lineHeight: 1.4 }}
+              />
+              <button
+                onClick={() => sendMessage(input, pendingAtts)}
+                disabled={
+                  !hasKey ||
+                  (!input.trim() && pendingAtts.length === 0) ||
+                  !!streamingId
+                }
+                className={cn(
+                  "grid h-9 w-9 shrink-0 place-items-center rounded-lg transition",
+                  !hasKey || (!input.trim() && pendingAtts.length === 0) || !!streamingId
+                    ? "bg-muted text-muted-foreground"
+                    : "bg-primary text-primary-foreground hover:opacity-90",
+                )}
+                aria-label="Send"
+              >
+                <ArrowUp className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="pt-1.5 text-center text-[10px] text-muted-foreground">
+              MGI Desktop Edition · Ctrl+N new · Ctrl+K search · Ctrl+B sidebar · Ctrl+/ focus · Esc stop
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Sidebar */}
+      {/* Mobile drawer */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40" onClick={() => setSidebarOpen(false)}>
+        <div className="md:hidden fixed inset-0 z-40" onClick={() => setSidebarOpen(false)}>
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
           <aside
             className="absolute left-0 top-0 flex h-full w-[85%] max-w-sm flex-col border-r border-border bg-background shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-2 border-b border-border px-3 py-3">
-              <MgiLogo size={26} />
-              <div className="flex-1 text-sm font-semibold">Conversations</div>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="grid h-8 w-8 place-items-center rounded-lg hover:bg-muted"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="p-2">
-              <button
-                onClick={() => {
-                  createConversation();
-                  setSidebarOpen(false);
-                }}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
-              >
-                <Plus className="h-4 w-4" /> New chat
-              </button>
-            </div>
-            <div className="px-2 pb-2">
-              <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-2">
-                <Search className="h-4 w-4 text-muted-foreground" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search"
-                  className="flex-1 bg-transparent py-2 text-sm outline-none"
-                />
-              </div>
-            </div>
-            <div className="mgi-scroll flex-1 overflow-y-auto px-2 pb-3">
-              {filtered.length === 0 && (
-                <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-                  No conversations yet.
-                </p>
-              )}
-              {filtered.map((c) => (
-                <ConversationRow
-                  key={c.id}
-                  c={c}
-                  active={c.id === activeId}
-                  onOpen={() => {
-                    setActiveId(c.id);
-                    setSidebarOpen(false);
-                  }}
-                  onRename={(t) => renameConversation(c.id, t)}
-                  onDelete={() => deleteConversation(c.id)}
-                />
-              ))}
-            </div>
+            {sidebarBody}
           </aside>
         </div>
       )}

@@ -1,6 +1,9 @@
-# Monty's GLM Interface (MGI)
+# Monty's GLM Interface (Desktop Edition) — MGI
 
-A polished mobile-first **PWA** chat client for **GLM models via OpenRouter**, built on TanStack Start + React. Not Expo, not React Native — a real web app engineered to install cleanly on Android and later wrap into a Play Store `.aab` via Capacitor.
+A **desktop-first** chat client for **GLM models via OpenRouter**, built on TanStack Start + React. This is the desktop edition of MGI, designed for wide screens with a permanent conversation sidebar, compact top bar, resizable settings panels, and keyboard shortcuts. A responsive mobile fallback is preserved.
+
+> This project lives in **its own GitHub repository**, separate from the original mobile/Android MGI project. Do not merge them.
+
 
 ## Features
 
@@ -190,3 +193,82 @@ Upload the resulting `.aab` to Play Console.
 - The key is sent only as `Authorization: Bearer …` to `openrouter.ai`.
 - No analytics, no backend, no telemetry.
 - No `.env` files are required or committed.
+
+## Desktop Build Path
+
+MGI Desktop Edition is packaged as a native app using **Tauri 2**. The web bundle
+(`dist/client/`) is embedded and rendered by the OS webview — no browser required.
+
+### Keep the mobile project separate
+
+This desktop edition lives in **its own GitHub repository**. Do **not** commit
+these Tauri changes back to the original mobile/Android MGI repo. Create the
+desktop repo fresh (e.g. `mgi-desktop`) and connect it via
+`Plus (+) → GitHub → Connect project` inside Lovable.
+
+### Prerequisites (local machine)
+
+- Node.js 20+ and npm/bun
+- Rust (stable) via https://rustup.rs
+- Platform toolchain:
+  - **macOS**: Xcode Command Line Tools
+  - **Windows**: Microsoft C++ Build Tools + WebView2 (preinstalled on Win 11)
+  - **Linux**: `libwebkit2gtk-4.1-dev`, `build-essential`, `libssl-dev`, `libayatana-appindicator3-dev`, `librsvg2-dev`
+
+### One-time setup
+
+```bash
+npm install
+npm i -D @tauri-apps/cli
+npx tauri icon public/icon.png     # generates src-tauri/icons/*
+```
+
+### Dev
+
+```bash
+npx tauri dev
+```
+
+This runs `npm run dev` (Vite on `http://localhost:8080`) and opens a native
+window pointing at the dev server with hot reload.
+
+### Production build
+
+```bash
+npx tauri build
+```
+
+Outputs installers to `src-tauri/target/release/bundle/`:
+
+| Platform | Artifact |
+| --- | --- |
+| macOS | `.app`, `.dmg` |
+| Windows | `.msi`, `.exe` (NSIS) |
+| Linux | `.AppImage`, `.deb`, `.rpm` |
+
+### Configuration
+
+- `src-tauri/tauri.conf.json` — window size, identifier, bundle targets.
+- `src-tauri/Cargo.toml` — Rust dependencies.
+- `src-tauri/src/main.rs` — native entry point.
+- Frontend build output must remain at `dist/client/` (already wired via `frontendDist`).
+
+### Notes
+
+- All chat logic, OpenRouter streaming, API-key storage, models, themes, and
+  attachments are unchanged from the web build — Tauri only provides the shell.
+- The OpenRouter API key still lives in the webview's `localStorage`, scoped to
+  the app identifier `app.mgi.desktop`.
+- The PWA service worker is not used in the Tauri build (assets are already local).
+
+## Keyboard shortcuts
+
+| Shortcut | Action |
+| --- | --- |
+| `Ctrl/Cmd + N` | New chat |
+| `Ctrl/Cmd + K` | Focus conversation search |
+| `Ctrl/Cmd + B` | Toggle conversation sidebar |
+| `Ctrl/Cmd + /` | Focus composer |
+| `Enter` | Send message |
+| `Shift + Enter` | Newline in composer |
+| `Esc` | Stop streaming response |

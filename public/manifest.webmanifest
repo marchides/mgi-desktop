@@ -1,11 +1,11 @@
 {
-  "name": "Monty's GLM Interface",
+  "name": "Monty's GLM Interface (Desktop Edition)",
   "short_name": "MGI",
-  "description": "Chat with GLM models via your own OpenRouter API key.",
+  "description": "Desktop-first chat with GLM models via your own OpenRouter API key.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#0f1115",
   "theme_color": "#0f1115",
   "icons": [
