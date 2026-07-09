@@ -419,9 +419,10 @@ function ChatPage() {
       <div className="flex flex-1 min-w-0 flex-col">
         {/* Compact top bar */}
         <header
-          className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur"
+          className="mgi-topbar-accent sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur"
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
+
           <div className="flex h-11 items-center gap-1.5 px-2 sm:px-3">
             {/* Mobile menu */}
             <button
