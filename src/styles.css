@@ -247,3 +247,119 @@ html[data-metallic="gold"] {
 html[data-metallic="platinum"] {
   --ring: oklch(0.82 0.01 260);
 }
+
+/* ============================================================
+   Themed stage: accent glow + subtle grid backdrop
+   Applied to the chat stage. Colours automatically follow the
+   selected accent through --accent-oklch.
+   ============================================================ */
+.mgi-stage {
+  position: relative;
+  isolation: isolate;
+}
+.mgi-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      70% 55% at 50% -10%,
+      oklch(var(--accent-oklch) / 0.28) 0%,
+      oklch(var(--accent-oklch) / 0.10) 35%,
+      transparent 70%
+    );
+}
+.mgi-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, oklch(var(--accent-oklch)) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, oklch(var(--accent-oklch)) 14%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(80% 60% at 50% 20%, black 30%, transparent 85%);
+  -webkit-mask-image: radial-gradient(80% 60% at 50% 20%, black 30%, transparent 85%);
+}
+.dark .mgi-stage::before {
+  background:
+    radial-gradient(
+      70% 55% at 50% -10%,
+      oklch(var(--accent-oklch) / 0.35) 0%,
+      oklch(var(--accent-oklch) / 0.12) 35%,
+      transparent 70%
+    );
+}
+
+/* Wordmark: split with the second half painted in the accent colour. */
+.mgi-wordmark-accent {
+  color: oklch(var(--accent-oklch));
+  text-shadow: 0 0 32px oklch(var(--accent-oklch) / 0.55);
+}
+html.mgi-metallic .mgi-wordmark-accent {
+  background-image: var(--accent-metallic-surface);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+
+/* Pulsing status dot in the accent colour. */
+@keyframes mgi-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(var(--accent-oklch) / 0.55); }
+  50%      { box-shadow: 0 0 0 6px oklch(var(--accent-oklch) / 0); }
+}
+.mgi-accent-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: oklch(var(--accent-oklch));
+  animation: mgi-pulse 2.2s ease-out infinite;
+}
+
+/* Composer: accent-tinted lift + focus glow. */
+.mgi-composer {
+  box-shadow:
+    0 1px 0 color-mix(in oklab, oklch(var(--accent-oklch)) 8%, transparent) inset,
+    0 8px 32px -12px oklch(var(--accent-oklch) / 0.35);
+  border-color: color-mix(in oklab, oklch(var(--accent-oklch)) 22%, var(--color-border));
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+.mgi-composer:focus-within {
+  border-color: oklch(var(--accent-oklch) / 0.75);
+  box-shadow:
+    0 0 0 3px oklch(var(--accent-oklch) / 0.18),
+    0 12px 40px -12px oklch(var(--accent-oklch) / 0.5);
+}
+
+/* Top bar: hairline accent underline that follows the theme. */
+.mgi-topbar-accent {
+  position: relative;
+}
+.mgi-topbar-accent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    oklch(var(--accent-oklch) / 0.55),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* "New chat" pill in the sidebar: soft accent halo. */
+.mgi-primary-glow {
+  box-shadow:
+    0 0 0 1px oklch(var(--accent-oklch) / 0.35),
+    0 10px 30px -10px oklch(var(--accent-oklch) / 0.55);
+}
