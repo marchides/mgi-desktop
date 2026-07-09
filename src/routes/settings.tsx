@@ -100,26 +100,64 @@ function SettingsPage() {
     else toast.error(res.message);
   }
 
+  const sections: Array<{ id: string; label: string }> = [
+    { id: "sect-api", label: "API Key" },
+    { id: "sect-model", label: "Model" },
+    { id: "sect-routing", label: "Routing" },
+    { id: "sect-system", label: "System prompt" },
+    { id: "sect-history", label: "History" },
+    { id: "sect-params", label: "Model parameters" },
+    { id: "sect-theme", label: "Theme" },
+    { id: "sect-attachments", label: "Attachments" },
+    { id: "sect-privacy", label: "Privacy & data" },
+  ];
+
   return (
-    <div className="mx-auto flex min-h-[100dvh] max-w-2xl flex-col bg-background text-foreground">
+    <div className="flex min-h-[100dvh] flex-col bg-background text-foreground">
       <header
         className="sticky top-0 z-10 border-b border-border bg-background/85 backdrop-blur"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <div className="flex h-12 items-center gap-2 px-2 sm:h-14 sm:px-3">
+        <div className="flex h-11 items-center gap-2 px-2 sm:px-3">
           <Link
             to="/"
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg hover:bg-muted"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
             aria-label="Back"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4" />
           </Link>
-          <MgiLogo size={24} className="shrink-0" />
-          <h1 className="truncate text-base font-semibold">Settings</h1>
+          <MgiLogo size={22} className="shrink-0" />
+          <h1 className="truncate text-sm font-semibold">Settings</h1>
+          <span className="ml-2 hidden md:inline text-xs text-muted-foreground">Desktop Edition</span>
         </div>
       </header>
 
-      <div className="mgi-scroll flex-1 overflow-y-auto px-3 py-3 space-y-3 sm:py-4 sm:space-y-4">
+      <PanelGroup orientation="horizontal" className="flex flex-1 min-h-0">
+        {/* Section nav — hidden on mobile, resizable on desktop */}
+        <Panel defaultSize={20} minSize={12} maxSize={32} className="hidden md:block">
+          <nav className="mgi-scroll h-full overflow-y-auto border-r border-border bg-muted/20 p-3 text-sm">
+            <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Sections
+            </div>
+            <ul className="space-y-0.5">
+              {sections.map((s) => (
+                <li key={s.id}>
+                  <a
+                    href={`#${s.id}`}
+                    className="block rounded-md px-2 py-1.5 hover:bg-muted"
+                  >
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </Panel>
+        <PanelResizeHandle className="hidden md:block w-px bg-border data-[resize-handle-active]:bg-primary hover:bg-primary/50 transition-colors cursor-col-resize" />
+        <Panel defaultSize={80} minSize={40}>
+          <div className="mgi-scroll h-full overflow-y-auto px-3 py-3 sm:py-4">
+            <div className="mx-auto w-full max-w-3xl xl:max-w-4xl space-y-3 sm:space-y-4">
+
 
         {/* API Key */}
         <Card title="OpenRouter API Key" description="Stored locally on this device only. Never logged or shared.">
