@@ -362,7 +362,7 @@ function ChatPage() {
             createConversation();
             setSidebarOpen(false);
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+          className="mgi-primary-glow flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-95"
         >
           <Plus className="h-4 w-4" /> New chat
           <kbd className="ml-2 hidden md:inline rounded bg-black/20 px-1.5 py-0.5 text-[10px] font-mono opacity-80">Ctrl N</kbd>
