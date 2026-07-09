@@ -1,6 +1,9 @@
-# Monty's GLM Interface (MGI)
+# Monty's GLM Interface (Desktop Edition) — MGI
 
-A polished mobile-first **PWA** chat client for **GLM models via OpenRouter**, built on TanStack Start + React. Not Expo, not React Native — a real web app engineered to install cleanly on Android and later wrap into a Play Store `.aab` via Capacitor.
+A **desktop-first** chat client for **GLM models via OpenRouter**, built on TanStack Start + React. This is the desktop edition of MGI, designed for wide screens with a permanent conversation sidebar, compact top bar, resizable settings panels, and keyboard shortcuts. A responsive mobile fallback is preserved.
+
+> This project lives in **its own GitHub repository**, separate from the original mobile/Android MGI project. Do not merge them.
+
 
 ## Features
 
