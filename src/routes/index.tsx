@@ -645,24 +645,27 @@ function deriveTitle(text: string): string {
 
 function EmptyState({ onPick: _onPick }: { onPick: (t: string) => void }) {
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-3 pt-6 text-center sm:gap-5 sm:pt-10">
+    <div className="mx-auto flex max-w-xl flex-col items-center gap-4 pt-10 text-center sm:gap-6 sm:pt-20">
       <span className="sm:hidden">
         <MgiLogo size={56} />
       </span>
       <span className="hidden sm:block">
-        <MgiLogo size={72} />
+        <MgiLogo size={84} />
       </span>
       <div>
-        <h1 className="font-display text-xl font-bold tracking-tight sm:text-2xl">
-          Monty's GLM Interface
+        <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl">
+          <span>Monty&rsquo;s </span>
+          <span className="mgi-wordmark-accent">GLM</span>
+          <span> Interface</span>
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Chat with GLM through your own OpenRouter key.
+        <p className="mt-3 text-sm text-muted-foreground sm:text-base">
+          Desktop Edition &middot; chat with GLM through your own OpenRouter key.
         </p>
       </div>
     </div>
   );
 }
+
 
 
 interface BubbleProps {
