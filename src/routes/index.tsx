@@ -423,7 +423,7 @@ function ChatPage() {
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
 
-          <div className="flex h-11 items-center gap-1.5 px-2 sm:px-3">
+          <div className="flex h-11 md:h-16 items-center gap-1.5 md:gap-3 px-2 sm:px-3 md:px-6">
             {/* Mobile menu */}
             <button
               onClick={() => setSidebarOpen(true)}
@@ -435,47 +435,65 @@ function ChatPage() {
             {/* Desktop sidebar toggle */}
             <button
               onClick={() => setDesktopSidebarCollapsed((v) => !v)}
-              className="hidden md:grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              className="hidden md:grid h-9 w-9 shrink-0 place-items-center rounded-lg hover:bg-muted"
               aria-label="Toggle sidebar"
               title="Toggle sidebar (Ctrl+B)"
             >
               {desktopSidebarCollapsed ? (
-                <PanelLeftOpen className="h-4 w-4" />
+                <PanelLeftOpen className="h-[18px] w-[18px]" />
               ) : (
-                <PanelLeftClose className="h-4 w-4" />
+                <PanelLeftClose className="h-[18px] w-[18px]" />
               )}
             </button>
-            <div className="flex min-w-0 flex-1 items-center gap-2">
+            <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
               <MgiLogo size={22} className="shrink-0 md:hidden" />
+              <MgiLogo size={34} className="hidden md:block shrink-0" />
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 md:gap-2.5">
                   <span className="mgi-accent-dot shrink-0" aria-hidden />
-                  <div className="truncate text-sm font-semibold leading-tight">
+                  <div className="truncate text-sm md:text-lg font-semibold leading-tight md:tracking-tight">
                     {active?.title ?? "Monty's GLM Interface"}
                   </div>
                 </div>
-                <div className="truncate text-[10px] leading-tight text-muted-foreground">
-                  {settings.model} · {settings.routingMode}
+                <div className="mt-0.5 flex items-center gap-2 truncate text-[10px] md:text-xs leading-tight text-muted-foreground">
+                  <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2 py-0.5 font-mono text-[11px] text-foreground/80">
+                    {settings.model}
+                  </span>
+                  <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[11px] capitalize">
+                    {settings.routingMode}
+                  </span>
+                  <span className="md:hidden truncate">
+                    {settings.model} · {settings.routingMode}
+                  </span>
                 </div>
               </div>
 
             </div>
             <button
               onClick={() => createConversation()}
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-muted transition"
               aria-label="New chat"
               title="New chat (Ctrl+N)"
+            >
+              <Plus className="h-4 w-4" /> New chat
+              <kbd className="ml-1 rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">Ctrl N</kbd>
+            </button>
+            <button
+              onClick={() => createConversation()}
+              className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              aria-label="New chat"
             >
               <Plus className="h-4 w-4" />
             </button>
             <Link
               to="/settings"
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              className="grid h-8 w-8 md:h-9 md:w-9 shrink-0 place-items-center rounded-lg hover:bg-muted"
               aria-label="Settings"
             >
-              <SettingsIcon className="h-4 w-4" />
+              <SettingsIcon className="h-4 w-4 md:h-[18px] md:w-[18px]" />
             </Link>
           </div>
+
         </header>
 
         {/* Warnings */}
