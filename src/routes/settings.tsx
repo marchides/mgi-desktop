@@ -43,12 +43,25 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
+  const navigate = useNavigate();
   const { settings, update, updateParams } = useSettings();
   const { conversations, activeId } = useConversations();
   const [showKey, setShowKey] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [customModel, setCustomModel] = useState("");
   const activeConversation = conversations.find((c) => c.id === activeId) ?? conversations[0];
+
+  const closeSettings = () => navigate({ to: "/" });
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeSettings();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   async function onExportAll() {
     try {
