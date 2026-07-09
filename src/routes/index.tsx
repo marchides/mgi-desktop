@@ -497,7 +497,7 @@ function ChatPage() {
         )}
 
         {/* Messages */}
-        <div ref={listRef} className="mgi-scroll flex-1 overflow-y-auto px-4 py-4 md:px-8 lg:px-12">
+        <div ref={listRef} className="mgi-stage mgi-scroll flex-1 overflow-y-auto px-4 py-4 md:px-8 lg:px-12">
           {!active || active.messages.length === 0 ? (
             <EmptyState onPick={(t) => setInput(t)} />
           ) : (
