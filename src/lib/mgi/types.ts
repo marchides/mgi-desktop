@@ -87,6 +87,8 @@ export interface AppSettings {
   maxAttachmentBytes: number;
   visionModel: string;
   warnLargeAttachments: boolean;
+  // Editor
+  enableSpellCheck: boolean;
 }
 
 export const MODEL_PRESETS: { id: string; label: string }[] = [
@@ -135,4 +137,5 @@ export const DEFAULT_SETTINGS: AppSettings = {
   maxAttachmentBytes: 20 * 1024 * 1024,
   visionModel: "z-ai/glm-5v-turbo",
   warnLargeAttachments: true,
+  enableSpellCheck: true,
 };

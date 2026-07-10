@@ -291,9 +291,44 @@ function SettingsPage() {
             value={settings.systemPrompt}
             onChange={(e) => update({ systemPrompt: e.target.value })}
             rows={4}
+            spellCheck={settings.enableSpellCheck}
+            autoCorrect="on"
+            autoCapitalize="sentences"
             placeholder="You are a helpful assistant..."
             className="mgi-scroll w-full resize-none rounded-lg border border-border bg-input/40 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
+        </Card>
+
+        <Card title="Editor" description="Text input behaviour for the composer and prompt fields.">
+          <label className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2 text-sm">
+            <span>
+              Enable spell check
+              <span className="block text-[11px] text-muted-foreground">
+                Uses your OS / browser dictionary. Nothing is sent externally.
+              </span>
+            </span>
+            <input
+              type="checkbox"
+              checked={settings.enableSpellCheck}
+              onChange={(e) => update({ enableSpellCheck: e.target.checked })}
+              className="h-4 w-4 accent-primary"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => {
+              try {
+                localStorage.removeItem("mgi:composer-height:v1");
+              } catch {}
+              window.dispatchEvent(new Event("mgi:composer-reset"));
+            }}
+            className="mt-1 rounded-lg border border-border bg-card px-3 py-2 text-left text-sm hover:bg-muted"
+          >
+            Reset composer size
+            <span className="block text-[11px] text-muted-foreground">
+              Restores the default input height (~120px).
+            </span>
+          </button>
         </Card>
 
         <span id="sect-history" className="block scroll-mt-16" />

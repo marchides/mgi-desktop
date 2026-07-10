@@ -77,6 +77,34 @@ function ChatPage() {
   const [pendingAtts, setPendingAtts] = useState<Attachment[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Composer height persistence (desktop). Default ~120px, min 80, max 70vh.
+  const COMPOSER_HEIGHT_KEY = "mgi:composer-height:v1";
+  const DEFAULT_COMPOSER_HEIGHT = 120;
+  const [composerHeight, setComposerHeight] = useState<number>(DEFAULT_COMPOSER_HEIGHT);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(COMPOSER_HEIGHT_KEY);
+      const n = raw ? parseInt(raw, 10) : NaN;
+      if (Number.isFinite(n) && n >= 80) setComposerHeight(n);
+    } catch {}
+  }, []);
+  const persistComposerHeight = (h: number) => {
+    setComposerHeight(h);
+    try {
+      localStorage.setItem(COMPOSER_HEIGHT_KEY, String(Math.round(h)));
+    } catch {}
+  };
+  const resetComposerHeight = () => {
+    persistComposerHeight(DEFAULT_COMPOSER_HEIGHT);
+    if (composerRef.current) composerRef.current.style.height = `${DEFAULT_COMPOSER_HEIGHT}px`;
+  };
+  useEffect(() => {
+    const h = () => resetComposerHeight();
+    window.addEventListener("mgi:composer-reset", h);
+    return () => window.removeEventListener("mgi:composer-reset", h);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const active = useMemo<Conversation | null>(
     () => conversations.find((c) => c.id === activeId) ?? null,
     [conversations, activeId],
@@ -623,28 +651,49 @@ function ChatPage() {
                     sendMessage(input, pendingAtts);
                   }
                 }}
-                rows={1}
+                onMouseUp={(e) => {
+                  const h = (e.currentTarget as HTMLTextAreaElement).offsetHeight;
+                  if (h && Math.abs(h - composerHeight) > 2) persistComposerHeight(h);
+                }}
+                spellCheck={settings.enableSpellCheck}
+                autoCorrect="on"
+                autoCapitalize="sentences"
                 placeholder={hasKey ? "Message GLM…  (Enter to send · Shift+Enter newline)" : "Add API key in Settings"}
-                className="mgi-scroll min-h-[38px] max-h-56 flex-1 resize-none bg-transparent px-1 py-2 text-[15px] outline-none placeholder:text-muted-foreground"
-                style={{ lineHeight: 1.4 }}
+                className="mgi-scroll flex-1 bg-transparent px-1 py-2 text-[15px] outline-none placeholder:text-muted-foreground resize-none md:resize-y"
+                style={{
+                  lineHeight: 1.4,
+                  minHeight: 80,
+                  maxHeight: "70vh",
+                  height: composerHeight,
+                }}
               />
-              <button
-                onClick={() => sendMessage(input, pendingAtts)}
-                disabled={
-                  !hasKey ||
-                  (!input.trim() && pendingAtts.length === 0) ||
-                  !!streamingId
-                }
-                className={cn(
-                  "grid h-9 w-9 shrink-0 place-items-center rounded-lg transition",
-                  !hasKey || (!input.trim() && pendingAtts.length === 0) || !!streamingId
-                    ? "bg-muted text-muted-foreground"
-                    : "bg-primary text-primary-foreground hover:opacity-90",
-                )}
-                aria-label="Send"
-              >
-                <ArrowUp className="h-5 w-5" />
-              </button>
+              <div className="flex flex-col items-center gap-1">
+                <button
+                  onClick={() => sendMessage(input, pendingAtts)}
+                  disabled={
+                    !hasKey ||
+                    (!input.trim() && pendingAtts.length === 0) ||
+                    !!streamingId
+                  }
+                  className={cn(
+                    "grid h-9 w-9 shrink-0 place-items-center rounded-lg transition",
+                    !hasKey || (!input.trim() && pendingAtts.length === 0) || !!streamingId
+                      ? "bg-muted text-muted-foreground"
+                      : "bg-primary text-primary-foreground hover:opacity-90",
+                  )}
+                  aria-label="Send"
+                >
+                  <ArrowUp className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={resetComposerHeight}
+                  title="Reset composer size"
+                  aria-label="Reset composer size"
+                  className="hidden md:grid h-6 w-9 place-items-center rounded text-[10px] text-muted-foreground hover:bg-muted"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
             <div className="pt-1.5 text-center text-[10px] text-muted-foreground">
               MGI Desktop Edition · Ctrl+N new · Ctrl+K search · Ctrl+B sidebar · Ctrl+/ focus · Esc stop
@@ -745,6 +794,9 @@ function MessageBubble({
             <textarea
               value={editDraft}
               onChange={(e) => setEditDraft(e.target.value)}
+              spellCheck
+              autoCorrect="on"
+              autoCapitalize="sentences"
               className="min-h-24 w-full rounded-lg bg-background/40 p-2 text-sm text-foreground outline-none"
             />
             <div className="flex justify-end gap-2">
@@ -862,6 +914,9 @@ function ConversationRow({
               }
               if (e.key === "Escape") setRenaming(false);
             }}
+            spellCheck
+            autoCorrect="on"
+            autoCapitalize="sentences"
             className="flex-1 bg-transparent outline-none"
           />
           <button
