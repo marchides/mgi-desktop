@@ -738,7 +738,9 @@ function ChatPage() {
                   Reset
                 </button>
               </div>
+              </div>
             </div>
+
             <div className="pt-1.5 text-center text-[10px] text-muted-foreground">
               MGI Desktop Edition · Ctrl+N new · Ctrl+K search · Ctrl+B sidebar · Ctrl+/ focus · Esc stop
             </div>
