@@ -105,6 +105,32 @@ function ChatPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Drag-to-resize composer from its top edge
+  const [isResizingComposer, setIsResizingComposer] = useState(false);
+  const startComposerResize = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const startY = e.clientY;
+    const startH = composerRef.current?.offsetHeight ?? composerHeight;
+    const maxH = Math.round(window.innerHeight * 0.7);
+    setIsResizingComposer(true);
+    const onMove = (ev: PointerEvent) => {
+      const delta = startY - ev.clientY; // drag up = grow
+      const next = Math.min(maxH, Math.max(80, startH + delta));
+      setComposerHeight(next);
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      setIsResizingComposer(false);
+      try {
+        const h = composerRef.current?.offsetHeight;
+        if (h) localStorage.setItem(COMPOSER_HEIGHT_KEY, String(Math.round(h)));
+      } catch {}
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+
   const active = useMemo<Conversation | null>(
     () => conversations.find((c) => c.id === activeId) ?? null,
     [conversations, activeId],
