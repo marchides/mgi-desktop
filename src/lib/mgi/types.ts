@@ -87,6 +87,8 @@ export interface AppSettings {
   maxAttachmentBytes: number;
   visionModel: string;
   warnLargeAttachments: boolean;
+  // Editor
+  enableSpellCheck: boolean;
 }
 
 export const MODEL_PRESETS: { id: string; label: string }[] = [
