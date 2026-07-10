@@ -137,4 +137,5 @@ export const DEFAULT_SETTINGS: AppSettings = {
   maxAttachmentBytes: 20 * 1024 * 1024,
   visionModel: "z-ai/glm-5v-turbo",
   warnLargeAttachments: true,
+  enableSpellCheck: true,
 };
