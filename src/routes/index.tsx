@@ -77,6 +77,28 @@ function ChatPage() {
   const [pendingAtts, setPendingAtts] = useState<Attachment[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Composer height persistence (desktop). Default ~120px, min 80, max 70vh.
+  const COMPOSER_HEIGHT_KEY = "mgi:composer-height:v1";
+  const DEFAULT_COMPOSER_HEIGHT = 120;
+  const [composerHeight, setComposerHeight] = useState<number>(DEFAULT_COMPOSER_HEIGHT);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(COMPOSER_HEIGHT_KEY);
+      const n = raw ? parseInt(raw, 10) : NaN;
+      if (Number.isFinite(n) && n >= 80) setComposerHeight(n);
+    } catch {}
+  }, []);
+  const persistComposerHeight = (h: number) => {
+    setComposerHeight(h);
+    try {
+      localStorage.setItem(COMPOSER_HEIGHT_KEY, String(Math.round(h)));
+    } catch {}
+  };
+  const resetComposerHeight = () => {
+    persistComposerHeight(DEFAULT_COMPOSER_HEIGHT);
+    if (composerRef.current) composerRef.current.style.height = `${DEFAULT_COMPOSER_HEIGHT}px`;
+  };
+
   const active = useMemo<Conversation | null>(
     () => conversations.find((c) => c.id === activeId) ?? null,
     [conversations, activeId],
