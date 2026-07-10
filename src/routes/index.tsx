@@ -788,6 +788,9 @@ function MessageBubble({
             <textarea
               value={editDraft}
               onChange={(e) => setEditDraft(e.target.value)}
+              spellCheck
+              autoCorrect="on"
+              autoCapitalize="sentences"
               className="min-h-24 w-full rounded-lg bg-background/40 p-2 text-sm text-foreground outline-none"
             />
             <div className="flex justify-end gap-2">
