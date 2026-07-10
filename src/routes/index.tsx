@@ -98,6 +98,12 @@ function ChatPage() {
     persistComposerHeight(DEFAULT_COMPOSER_HEIGHT);
     if (composerRef.current) composerRef.current.style.height = `${DEFAULT_COMPOSER_HEIGHT}px`;
   };
+  useEffect(() => {
+    const h = () => resetComposerHeight();
+    window.addEventListener("mgi:composer-reset", h);
+    return () => window.removeEventListener("mgi:composer-reset", h);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const active = useMemo<Conversation | null>(
     () => conversations.find((c) => c.id === activeId) ?? null,
