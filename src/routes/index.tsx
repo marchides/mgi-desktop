@@ -908,6 +908,9 @@ function ConversationRow({
               }
               if (e.key === "Escape") setRenaming(false);
             }}
+            spellCheck
+            autoCorrect="on"
+            autoCapitalize="sentences"
             className="flex-1 bg-transparent outline-none"
           />
           <button
