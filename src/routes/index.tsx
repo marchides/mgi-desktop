@@ -532,17 +532,17 @@ function ChatPage() {
               </div>
             </div>
             {/* Desktop model / routing / params badges */}
-            <div className="hidden md:grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border/60 bg-border/40 text-xs leading-tight">
-              <div className="flex min-w-0 items-center justify-center gap-1.5 bg-muted/30 px-3 py-1.5 font-chat text-foreground/90">
+            <div className="hidden md:grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border/70 bg-border/50 text-[11px] leading-tight">
+              <div className="flex min-w-0 items-center gap-1.5 bg-muted/20 px-3 py-1.5 font-chat text-foreground/90">
                 <span className="truncate">{settings.model}</span>
               </div>
-              <div className="flex min-w-0 items-center justify-center gap-1.5 bg-muted/30 px-3 py-1.5 font-chat text-foreground/90 capitalize">
+              <div className="flex min-w-0 items-center gap-1.5 bg-muted/20 px-3 py-1.5 font-chat text-foreground/90 capitalize">
                 <span className="truncate">{settings.routingMode}</span>
               </div>
-              <div className="flex min-w-0 items-center justify-center gap-1.5 bg-muted/30 px-3 py-1.5 font-chat text-foreground/90">
+              <div className="flex min-w-0 items-center gap-1.5 bg-muted/20 px-3 py-1.5 font-chat text-foreground/90">
                 <span className="truncate">Reasoning: {settings.params.reasoning_effort}</span>
               </div>
-              <div className="flex min-w-0 items-center justify-center gap-1.5 bg-muted/30 px-3 py-1.5 font-chat text-foreground/90">
+              <div className="flex min-w-0 items-center gap-1.5 bg-muted/20 px-3 py-1.5 font-chat text-foreground/90">
                 <span className="truncate">
                   Max: {" "}
                   {settings.params.max_output_tokens === "max"
