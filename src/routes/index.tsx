@@ -516,36 +516,39 @@ function ChatPage() {
                     {active?.title ?? "Monty's GLM Interface"}
                   </div>
                 </div>
-                <div className="mt-1 md:mt-1.5 flex items-center gap-2 truncate text-[10px] md:text-xs leading-tight text-muted-foreground">
-                  <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 font-mono text-[11px] text-foreground/80">
-                    {settings.model}
-                  </span>
-                  <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px] capitalize">
-                    {settings.routingMode}
-                  </span>
-                  <span className="md:hidden truncate">
-                    {settings.model} · {settings.routingMode}
+                <div className="mt-1 md:mt-1.5 flex items-center gap-2 truncate text-[10px] md:text-xs leading-tight text-muted-foreground md:hidden">
+                  <span className="truncate">{settings.model}</span>
+                  <span>·</span>
+                  <span className="capitalize">{settings.routingMode}</span>
+                  <span>·</span>
+                  <span>{settings.params.reasoning_effort}</span>
+                  <span>·</span>
+                  <span>
+                    {settings.params.max_output_tokens === "max"
+                      ? "Max"
+                      : settings.params.max_output_tokens.toLocaleString()}
                   </span>
                 </div>
               </div>
-
             </div>
-            <button
-              onClick={() => createConversation()}
-              className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium hover:bg-muted transition"
-              aria-label="New chat"
-              title="New chat (Ctrl+N)"
-            >
-              <Plus className="h-4 w-4" /> New chat
-              <kbd className="ml-1 rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">Ctrl N</kbd>
-            </button>
-            <button
-              onClick={() => createConversation()}
-              className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg hover:bg-muted"
-              aria-label="New chat"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
+            {/* Desktop model / routing / params badges */}
+            <div className="hidden md:flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 font-mono text-[11px] text-foreground/80">
+                {settings.model}
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px] capitalize">
+                {settings.routingMode}
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px]">
+                Reasoning: {settings.params.reasoning_effort}
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px]">
+                Max: {" "}
+                {settings.params.max_output_tokens === "max"
+                  ? "Max"
+                  : settings.params.max_output_tokens.toLocaleString()}
+              </span>
+            </div>
             <Link
               to="/settings"
               className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-items-center rounded-lg hover:bg-muted"
