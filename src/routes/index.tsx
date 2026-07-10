@@ -532,22 +532,24 @@ function ChatPage() {
               </div>
             </div>
             {/* Desktop model / routing / params badges */}
-            <div className="hidden md:flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 font-mono text-[11px] text-foreground/80">
-                {settings.model}
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px] capitalize">
-                {settings.routingMode}
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px]">
-                Reasoning: {settings.params.reasoning_effort}
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px]">
-                Max: {" "}
-                {settings.params.max_output_tokens === "max"
-                  ? "Max"
-                  : settings.params.max_output_tokens.toLocaleString()}
-              </span>
+            <div className="hidden md:grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border/70 bg-border/50 text-[11px] leading-tight">
+              <div className="flex min-w-0 items-center gap-1.5 bg-muted/20 px-3 py-1.5 font-chat text-foreground/90">
+                <span className="truncate">{settings.model}</span>
+              </div>
+              <div className="flex min-w-0 items-center gap-1.5 bg-muted/20 px-3 py-1.5 font-chat text-foreground/90 capitalize">
+                <span className="truncate">{settings.routingMode}</span>
+              </div>
+              <div className="flex min-w-0 items-center gap-1.5 bg-muted/20 px-3 py-1.5 font-chat text-foreground/90">
+                <span className="truncate">Reasoning: {settings.params.reasoning_effort}</span>
+              </div>
+              <div className="flex min-w-0 items-center gap-1.5 bg-muted/20 px-3 py-1.5 font-chat text-foreground/90">
+                <span className="truncate">
+                  Max: {" "}
+                  {settings.params.max_output_tokens === "max"
+                    ? "Max"
+                    : settings.params.max_output_tokens.toLocaleString()}
+                </span>
+              </div>
             </div>
             <Link
               to="/settings"

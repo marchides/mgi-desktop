@@ -142,6 +142,9 @@ h1, h2, h3, h4, h5, h6,
   font-family: var(--font-display);
   letter-spacing: -0.01em;
 }
+.font-chat {
+  font-family: var(--font-chat);
+}
 /* Chat surfaces keep Sansation even for headings/strong inside markdown. */
 .mgi-prose h1, .mgi-prose h2, .mgi-prose h3,
 .mgi-prose h4, .mgi-prose h5, .mgi-prose h6,
