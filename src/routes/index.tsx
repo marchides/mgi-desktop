@@ -642,7 +642,25 @@ function ChatPage() {
                 onClearAll={() => setPendingAtts([])}
               />
             )}
-            <div className="mgi-composer flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring">
+            <div className="relative">
+              <div
+                onPointerDown={startComposerResize}
+                role="separator"
+                aria-orientation="horizontal"
+                aria-label="Resize message box (drag up or down)"
+                title="Drag to resize"
+                className={cn(
+                  "hidden md:flex absolute -top-2 left-0 right-0 z-20 h-4 cursor-ns-resize items-center justify-center group",
+                  isResizingComposer && "select-none",
+                )}
+              >
+                <div className={cn(
+                  "h-1.5 w-14 rounded-full bg-border transition group-hover:bg-primary/60",
+                  isResizingComposer && "bg-primary",
+                )} />
+              </div>
+              <div className="mgi-composer flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring">
+
               <input
                 ref={fileInputRef}
                 type="file"
