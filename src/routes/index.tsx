@@ -105,6 +105,32 @@ function ChatPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Drag-to-resize composer from its top edge
+  const [isResizingComposer, setIsResizingComposer] = useState(false);
+  const startComposerResize = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const startY = e.clientY;
+    const startH = composerRef.current?.offsetHeight ?? composerHeight;
+    const maxH = Math.round(window.innerHeight * 0.7);
+    setIsResizingComposer(true);
+    const onMove = (ev: PointerEvent) => {
+      const delta = startY - ev.clientY; // drag up = grow
+      const next = Math.min(maxH, Math.max(80, startH + delta));
+      setComposerHeight(next);
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      setIsResizingComposer(false);
+      try {
+        const h = composerRef.current?.offsetHeight;
+        if (h) localStorage.setItem(COMPOSER_HEIGHT_KEY, String(Math.round(h)));
+      } catch {}
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+
   const active = useMemo<Conversation | null>(
     () => conversations.find((c) => c.id === activeId) ?? null,
     [conversations, activeId],
@@ -616,7 +642,25 @@ function ChatPage() {
                 onClearAll={() => setPendingAtts([])}
               />
             )}
-            <div className="mgi-composer flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring">
+            <div className="relative">
+              <div
+                onPointerDown={startComposerResize}
+                role="separator"
+                aria-orientation="horizontal"
+                aria-label="Resize message box (drag up or down)"
+                title="Drag to resize"
+                className={cn(
+                  "hidden md:flex absolute -top-2 left-0 right-0 z-20 h-4 cursor-ns-resize items-center justify-center group",
+                  isResizingComposer && "select-none",
+                )}
+              >
+                <div className={cn(
+                  "h-1.5 w-14 rounded-full bg-border transition group-hover:bg-primary/60",
+                  isResizingComposer && "bg-primary",
+                )} />
+              </div>
+              <div className="mgi-composer flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring">
+
               <input
                 ref={fileInputRef}
                 type="file"
@@ -659,7 +703,7 @@ function ChatPage() {
                 autoCorrect="on"
                 autoCapitalize="sentences"
                 placeholder={hasKey ? "Message GLM…  (Enter to send · Shift+Enter newline)" : "Add API key in Settings"}
-                className="mgi-scroll flex-1 bg-transparent px-1 py-2 text-[15px] outline-none placeholder:text-muted-foreground resize-none md:resize-y"
+                className="mgi-scroll flex-1 bg-transparent px-1 py-2 text-[15px] outline-none placeholder:text-muted-foreground resize-none"
                 style={{
                   lineHeight: 1.4,
                   minHeight: 80,
@@ -694,7 +738,9 @@ function ChatPage() {
                   Reset
                 </button>
               </div>
+              </div>
             </div>
+
             <div className="pt-1.5 text-center text-[10px] text-muted-foreground">
               MGI Desktop Edition · Ctrl+N new · Ctrl+K search · Ctrl+B sidebar · Ctrl+/ focus · Esc stop
             </div>
