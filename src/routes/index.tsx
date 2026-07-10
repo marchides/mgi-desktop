@@ -703,7 +703,7 @@ function ChatPage() {
                 autoCorrect="on"
                 autoCapitalize="sentences"
                 placeholder={hasKey ? "Message GLM…  (Enter to send · Shift+Enter newline)" : "Add API key in Settings"}
-                className="mgi-scroll flex-1 bg-transparent px-1 py-2 text-[15px] outline-none placeholder:text-muted-foreground resize-none md:resize-y"
+                className="mgi-scroll flex-1 bg-transparent px-1 py-2 text-[15px] outline-none placeholder:text-muted-foreground resize-none"
                 style={{
                   lineHeight: 1.4,
                   minHeight: 80,
