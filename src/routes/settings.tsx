@@ -114,17 +114,6 @@ function SettingsPage() {
     else toast.error(res.message);
   }
 
-  const sections: Array<{ id: string; label: string }> = [
-    { id: "sect-api", label: "API Key" },
-    { id: "sect-model", label: "Model" },
-    { id: "sect-routing", label: "Routing" },
-    { id: "sect-system", label: "System prompt" },
-    { id: "sect-history", label: "History" },
-    { id: "sect-params", label: "Model parameters" },
-    { id: "sect-theme", label: "Theme" },
-    { id: "sect-attachments", label: "Attachments" },
-    { id: "sect-privacy", label: "Privacy & data" },
-  ];
 
   return (
     <div
