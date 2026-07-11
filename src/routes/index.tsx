@@ -923,6 +923,12 @@ function MessageBubble({
         {m.usage?.total_tokens != null && (
           <span>· {m.usage.total_tokens} tok</span>
         )}
+        {!isUser && m.usedMemoryIds && m.usedMemoryIds.length > 0 && (
+          <span title="Pinned memories injected into this response">
+            · Used {m.usedMemoryIds.length}{" "}
+            memor{m.usedMemoryIds.length === 1 ? "y" : "ies"}
+          </span>
+        )}
         {!editing && (
           <>
             <button onClick={copy} className="hover:text-foreground" aria-label="Copy">
