@@ -13,7 +13,7 @@
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "tauri:icon": "tauri icon public/icon.png"
+    "tauri:icon": "tauri icon src-tauri/icon-source.png"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
