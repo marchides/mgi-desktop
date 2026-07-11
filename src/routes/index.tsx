@@ -243,11 +243,15 @@ function ChatPage() {
       createdAt: Date.now(),
       attachments: attachments.length ? attachments : undefined,
     };
+    const pinnedMems = getPinnedMemories();
+    const memoryBlock = buildLocalMemoryBlock(pinnedMems);
+    const usedMemoryIds = pinnedMems.map((m) => m.id);
     const assistantMsg: ChatMessage = {
       id: crypto.randomUUID(),
       role: "assistant",
       content: "",
       createdAt: Date.now(),
+      usedMemoryIds: usedMemoryIds.length ? usedMemoryIds : undefined,
     };
     updateConversation(conv.id, (c) => ({
       ...c,
@@ -262,7 +266,7 @@ function ChatPage() {
     setStreamingId(assistantMsg.id);
 
     const history = [...conv.messages, userMsg];
-    const { body } = buildOpenRouterBody({ settings, messages: history });
+    const { body } = buildOpenRouterBody({ settings, messages: history, memoryBlock });
 
     const ac = new AbortController();
     abortRef.current = ac;
