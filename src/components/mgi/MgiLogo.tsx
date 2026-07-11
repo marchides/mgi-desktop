@@ -1,37 +1,68 @@
 interface Props {
   size?: number;
   className?: string;
-  /** Solid tinted tile vs bare bundled logo. */
+  /** Solid tinted tile vs bare mark. */
   variant?: "tile" | "mark";
+  /**
+   * For the `mark` variant only. Picks which artwork to render.
+   * Defaults to `auto` which follows the current theme (white in dark, black in light).
+   */
+  tone?: "auto" | "black" | "white";
 }
 
-const logoUrl = "/icon.png";
+const blackZ = "/logo-z-black.png";
+const whiteZ = "/logo-z-white.png";
 
 /**
- * MGI brand mark.
+ * MGI brand mark — the Z glyph.
  *
- * Uses the bundled public/icon.png instead of Lovable's generated asset URL so
- * the logo works in the static web build and inside the Tauri desktop bundle.
+ * `tile` renders the glyph inside the accent-tinted rounded tile, coloured via
+ * CSS masking so the letter always uses the accent's on-accent tone (works for
+ * light, dark, and metallic accents alike).
+ *
+ * `mark` renders the bare Z as a normal image (black on light, white in dark by default).
  */
-export function MgiLogo({ size = 56, className, variant = "tile" }: Props) {
+export function MgiLogo({ size = 56, className, variant = "tile", tone = "auto" }: Props) {
   if (variant === "mark") {
+    if (tone === "auto") {
+      return (
+        <span
+          className={className}
+          style={{ display: "inline-block", width: size, height: size, position: "relative" }}
+          aria-label="MGI logo"
+          role="img"
+        >
+          <img
+            src={blackZ}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+            className="dark:hidden"
+            style={{ width: size, height: size, objectFit: "contain", display: "block" }}
+          />
+          <img
+            src={whiteZ}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+            className="hidden dark:block"
+            style={{ width: size, height: size, objectFit: "contain", display: "block" }}
+          />
+        </span>
+      );
+    }
     return (
       <img
-        src={logoUrl}
+        src={tone === "white" ? whiteZ : blackZ}
         alt="MGI logo"
         className={className}
         draggable={false}
-        style={{
-          display: "inline-block",
-          width: size,
-          height: size,
-          objectFit: "contain",
-        }}
+        style={{ display: "inline-block", width: size, height: size, objectFit: "contain" }}
       />
     );
   }
 
-  const inner = Math.round(size * 0.78);
+  const inner = Math.round(size * 0.72);
   return (
     <span
       role="img"
@@ -50,16 +81,21 @@ export function MgiLogo({ size = 56, className, variant = "tile" }: Props) {
         overflow: "hidden",
       }}
     >
-      <img
-        src={logoUrl}
-        alt=""
+      <span
         aria-hidden="true"
-        draggable={false}
         style={{
+          display: "block",
           width: inner,
           height: inner,
-          objectFit: "contain",
-          display: "block",
+          backgroundColor: "oklch(var(--on-accent-oklch))",
+          WebkitMaskImage: `url(${blackZ})`,
+          maskImage: `url(${blackZ})`,
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
+          WebkitMaskPosition: "center",
+          maskPosition: "center",
+          WebkitMaskSize: "contain",
+          maskSize: "contain",
         }}
       />
     </span>
