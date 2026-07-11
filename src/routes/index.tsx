@@ -18,6 +18,7 @@ import {
   Check,
   PanelLeftClose,
   PanelLeftOpen,
+  Brain,
 } from "lucide-react";
 import { toast } from "sonner";
 import { MgiLogo } from "@/components/mgi/MgiLogo";
@@ -38,6 +39,7 @@ import {
 import { getCapability } from "@/lib/mgi/models";
 import { estimateMessagesTokens } from "@/lib/mgi/tokens";
 import { cn } from "@/lib/utils";
+import { buildLocalMemoryBlock, getPinnedMemories } from "@/lib/mgi/memory";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -241,11 +243,15 @@ function ChatPage() {
       createdAt: Date.now(),
       attachments: attachments.length ? attachments : undefined,
     };
+    const pinnedMems = getPinnedMemories();
+    const memoryBlock = buildLocalMemoryBlock(pinnedMems);
+    const usedMemoryIds = pinnedMems.map((m) => m.id);
     const assistantMsg: ChatMessage = {
       id: crypto.randomUUID(),
       role: "assistant",
       content: "",
       createdAt: Date.now(),
+      usedMemoryIds: usedMemoryIds.length ? usedMemoryIds : undefined,
     };
     updateConversation(conv.id, (c) => ({
       ...c,
@@ -260,7 +266,7 @@ function ChatPage() {
     setStreamingId(assistantMsg.id);
 
     const history = [...conv.messages, userMsg];
-    const { body } = buildOpenRouterBody({ settings, messages: history });
+    const { body } = buildOpenRouterBody({ settings, messages: history, memoryBlock });
 
     const ac = new AbortController();
     abortRef.current = ac;
@@ -551,6 +557,14 @@ function ChatPage() {
                 </span>
               </div>
             </div>
+            <Link
+              to="/memory"
+              className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              aria-label="Memory"
+              title="Memory"
+            >
+              <Brain className="h-4 w-4 md:h-5 md:w-5" />
+            </Link>
             <Link
               to="/settings"
               className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-items-center rounded-lg hover:bg-muted"
@@ -908,6 +922,12 @@ function MessageBubble({
         <span>{time}</span>
         {m.usage?.total_tokens != null && (
           <span>· {m.usage.total_tokens} tok</span>
+        )}
+        {!isUser && m.usedMemoryIds && m.usedMemoryIds.length > 0 && (
+          <span title="Pinned memories injected into this response">
+            · Used {m.usedMemoryIds.length}{" "}
+            memor{m.usedMemoryIds.length === 1 ? "y" : "ies"}
+          </span>
         )}
         {!editing && (
           <>
