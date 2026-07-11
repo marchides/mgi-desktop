@@ -39,6 +39,7 @@ import {
 import { getCapability } from "@/lib/mgi/models";
 import { estimateMessagesTokens } from "@/lib/mgi/tokens";
 import { cn } from "@/lib/utils";
+import { buildLocalMemoryBlock, getPinnedMemories } from "@/lib/mgi/memory";
 
 export const Route = createFileRoute("/")({
   head: () => ({
