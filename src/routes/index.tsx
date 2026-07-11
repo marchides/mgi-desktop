@@ -558,6 +558,14 @@ function ChatPage() {
               </div>
             </div>
             <Link
+              to="/memory"
+              className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-items-center rounded-lg hover:bg-muted"
+              aria-label="Memory"
+              title="Memory"
+            >
+              <Brain className="h-4 w-4 md:h-5 md:w-5" />
+            </Link>
+            <Link
               to="/settings"
               className="grid h-8 w-8 md:h-10 md:w-10 shrink-0 place-items-center rounded-lg hover:bg-muted"
               aria-label="Settings"
