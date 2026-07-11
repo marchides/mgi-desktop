@@ -15,6 +15,8 @@ interface BuildOptions {
   settings: AppSettings;
   messages: ChatMessage[]; // ordered, user+assistant only
   systemPromptOverride?: string;
+  /** Optional local-memory block appended to the system message. */
+  memoryBlock?: string;
 }
 
 type TextPart = { type: "text"; text: string };
@@ -33,8 +35,12 @@ export function buildOpenRouterBody({
   settings,
   messages,
   systemPromptOverride,
+  memoryBlock,
 }: BuildOptions) {
-  const system = systemPromptOverride ?? settings.systemPrompt;
+  const baseSystem = systemPromptOverride ?? settings.systemPrompt;
+  const system = memoryBlock
+    ? (baseSystem.trim() ? `${baseSystem}\n\n${memoryBlock}` : memoryBlock)
+    : baseSystem;
   const trimmed = applyHistoryMode(messages, settings);
 
   const payloadMessages: { role: string; content: string | ContentPart[] }[] = [];
