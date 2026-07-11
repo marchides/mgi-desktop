@@ -128,15 +128,12 @@ function SettingsPage() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/50 backdrop-blur-sm p-0 sm:items-center sm:p-6 md:p-10"
+      className="fixed inset-0 z-50 flex bg-background"
       role="dialog"
       aria-modal="true"
       aria-label="Settings"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) closeSettings();
-      }}
     >
-      <div className="flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-none border border-border bg-background text-foreground shadow-2xl sm:h-auto sm:max-h-[90vh] sm:rounded-2xl">
+      <div className="flex h-full w-full flex-col overflow-hidden bg-background text-foreground">
         <header className="relative shrink-0 border-b border-border bg-background/85 backdrop-blur">
           <div className="flex h-14 items-center gap-3 px-4 sm:px-5">
             <MgiLogo size={26} className="shrink-0" />
