@@ -29,6 +29,8 @@ export interface ChatMessage {
   };
   error?: string;
   attachments?: Attachment[];
+  /** IDs of pinned memories that were injected into the request that produced this message. */
+  usedMemoryIds?: string[];
 }
 
 export interface Conversation {
