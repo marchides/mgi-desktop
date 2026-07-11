@@ -140,32 +140,8 @@ function SettingsPage() {
           </div>
         </header>
 
-      <PanelGroup orientation="horizontal" className="flex flex-1 min-h-0">
-
-        {/* Section nav — hidden on mobile, resizable on desktop */}
-        <Panel defaultSize={20} minSize={12} maxSize={32} className="hidden md:block">
-          <nav className="mgi-scroll h-full overflow-y-auto border-r border-border bg-muted/20 p-3 text-sm">
-            <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              Sections
-            </div>
-            <ul className="space-y-0.5">
-              {sections.map((s) => (
-                <li key={s.id}>
-                  <a
-                    href={`#${s.id}`}
-                    className="block rounded-md px-2 py-1.5 hover:bg-muted"
-                  >
-                    {s.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </Panel>
-        <PanelResizeHandle className="hidden md:block w-px bg-border data-[resize-handle-active]:bg-primary hover:bg-primary/50 transition-colors cursor-col-resize" />
-        <Panel defaultSize={80} minSize={40}>
-          <div className="mgi-scroll h-full overflow-y-auto px-3 py-3 sm:py-4">
-            <div className="mx-auto w-full max-w-3xl xl:max-w-4xl space-y-3 sm:space-y-4">
+      <div className="mgi-scroll flex-1 overflow-y-auto px-3 py-3 sm:py-4">
+        <div className="mx-auto w-full max-w-3xl xl:max-w-4xl space-y-3 sm:space-y-4">
 
 
         <span id="sect-api" className="block scroll-mt-16" />
