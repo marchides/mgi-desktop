@@ -18,6 +18,7 @@ import {
   Check,
   PanelLeftClose,
   PanelLeftOpen,
+  Brain,
 } from "lucide-react";
 import { toast } from "sonner";
 import { MgiLogo } from "@/components/mgi/MgiLogo";
